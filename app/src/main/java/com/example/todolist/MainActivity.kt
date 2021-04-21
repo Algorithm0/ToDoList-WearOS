@@ -29,10 +29,10 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     private lateinit var recyclerView: WearableRecyclerView
     private lateinit var bar : ProgressBar
     private lateinit var menuItems : List<OneToDo>
-//    private val oneToDoDAO = Room.databaseBuilder(
-//        applicationContext,
-//        AppDatabase::class.java, "database"
-//    ).build().OneToDoDAO()
+    private val oneToDoDAO = Room.databaseBuilder(
+        applicationContext,
+        AppDatabase::class.java, "database"
+    ).build().OneToDoDAO()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
         bar = findViewById(R.id.main_progress)
 
-        //updateList()
+        updateList()
     }
 
     fun sendMessage(msg : String) {
@@ -62,33 +62,33 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         startActivity(intent)
     }
 
-//    private fun updateList() {
-//        bar.visibility = ProgressBar.VISIBLE
-//        recyclerView.visibility = View.INVISIBLE
-////
-//        scope.launch {
-//            menuItems = oneToDoDAO.getAll()
-//            runOnUiThread {
-//                recyclerView.adapter = MainMenuAdapter(menuItems, object :
-//                    MainMenuAdapter.AdapterCallback {
-//                    override fun onItemClicked(menuPosition: Int?) {
-//                        when (menuPosition) {
-//                            null -> {}
-//                            else -> sendMessage(createMes(menuPosition))
-//                        }
-//                    }
-//                })
-//                bar.visibility = ProgressBar.INVISIBLE
-//                recyclerView.visibility = View.VISIBLE
-//                recyclerView.requestFocus()
-//            }
-//        }
-//    }
+    private fun updateList() {
+        bar.visibility = ProgressBar.VISIBLE
+        recyclerView.visibility = View.INVISIBLE
+//
+        scope.launch {
+            menuItems = oneToDoDAO.getAll()
+            runOnUiThread {
+                recyclerView.adapter = MainMenuAdapter(menuItems, object :
+                    MainMenuAdapter.AdapterCallback {
+                    override fun onItemClicked(menuPosition: Int?) {
+                        when (menuPosition) {
+                            null -> {}
+                            else -> sendMessage(createMes(menuPosition))
+                        }
+                    }
+                })
+                bar.visibility = ProgressBar.INVISIBLE
+                recyclerView.visibility = View.VISIBLE
+                recyclerView.requestFocus()
+            }
+        }
+    }
 
-//    fun createMes(code: Int): String {
-//        return if (code == -222) "A"
-//        else "O${oneToDoDAO.loadByIds(code).text}"
-//    }
+    fun createMes(code: Int): String {
+        return if (code == -222) "A"
+        else "O${oneToDoDAO.loadByIds(code).text}"
+    }
 
     // Enables Always-on
     override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback = MyAmbientCallback()

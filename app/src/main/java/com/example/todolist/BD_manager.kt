@@ -25,7 +25,7 @@ interface OneToDoDAO {
     fun delete(user: OneToDo)
 }
 
-//@Database(entities = [OneToDo::class], version = 1)
-//abstract class AppDatabase : RoomDatabase() {
-//    abstract fun OneToDoDAO(): OneToDoDAO
-//}
+@Database(entities = [OneToDo::class], version = 1)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun OneToDoDAO(): OneToDoDAO
+}
