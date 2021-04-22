@@ -17,7 +17,8 @@ class MainMenuAdapter(dataArgs: List<TodoEntity>, callback: AdapterCallback?) :
         fun onItemClicked(menuPosition: Int?)
     }
 
-    private val callback: AdapterCallback?
+    private val callback: AdapterCallback? = callback
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.main_menu_item, parent, false)
         return RecyclerViewHolder(view)
@@ -32,21 +33,24 @@ class MainMenuAdapter(dataArgs: List<TodoEntity>, callback: AdapterCallback?) :
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
-        if (position == 0) {
-            holder.menuItem.text = "Добавить"
-            holder.menuContainer.setOnClickListener { callback?.onItemClicked(-222) }
-        }
-        else {
-            holder.menuItem.text = dataSource[position-1].content
-            holder.menuContainer.setOnClickListener { callback?.onItemClicked(dataSource[position-1].id) }
+        when (position) {
+            0 -> {holder.menuItem.text = "Добавить"; holder.menuContainer.setOnClickListener { callback?.onItemClicked(-222) }}
+            1 -> {
+                if (dataSource.isEmpty()) {
+                    holder.menuItem.text = "здесь\nничего нет"
+                    holder.menuItem.textSize = 15f
+                }
+            }
+            else -> {
+                holder.menuItem.text = dataSource[position-1].content
+                holder.menuContainer.setOnClickListener { callback?.onItemClicked(dataSource[position-1].id) }
+            }
         }
     }
 
     override fun getItemCount(): Int {
-        return dataSource.size+1
+        return if (dataSource.isEmpty()) 2
+        else dataSource.size+1
     }
 
-    init {
-        this.callback = callback
-    }
 }

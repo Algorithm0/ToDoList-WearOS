@@ -10,14 +10,14 @@ class SecondActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackPr
         super.onCreate(savedInstanceState)
         setContentView(R.layout.second_display)
 
-        val message = intent.getStringExtra(EXTRA_MESSAGE)
+        //val message = intent.getStringExtra(EXTRA_MESSAGE)
 
-        readMessage(message.toString())
+        //readMessage(message.toString())
     }
 
-    private fun readMessage (mes : String) {
-
-    }
+//    private fun readMessage (mes : String) {
+//
+//    }
 
     // Enables Always-on
     override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback = MyAmbientCallback()
