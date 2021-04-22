@@ -9,7 +9,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class MainMenuAdapter(dataArgs: List<OneToDo>, callback: AdapterCallback?) :
+class MainMenuAdapter(dataArgs: List<TodoEntity>, callback: AdapterCallback?) :
     RecyclerView.Adapter<MainMenuAdapter.RecyclerViewHolder>() {
     private var dataSource = dataArgs
 
@@ -37,7 +37,7 @@ class MainMenuAdapter(dataArgs: List<OneToDo>, callback: AdapterCallback?) :
             holder.menuContainer.setOnClickListener { callback?.onItemClicked(-222) }
         }
         else {
-            holder.menuItem.text = dataSource[position-1].text
+            holder.menuItem.text = dataSource[position-1].content
             holder.menuContainer.setOnClickListener { callback?.onItemClicked(dataSource[position-1].id) }
         }
     }

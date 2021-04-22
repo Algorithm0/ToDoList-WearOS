@@ -16,6 +16,7 @@ class SecondActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackPr
     }
 
     private fun readMessage (mes : String) {
+
     }
 
     // Enables Always-on

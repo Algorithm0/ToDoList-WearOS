@@ -1,31 +1,35 @@
 package com.example.todolist
 
 import androidx.room.*
-import java.sql.Timestamp
 
-@Entity
-data class OneToDo(
-    @PrimaryKey val id: Int,
-    @ColumnInfo(name = "text") val text: String?,
-    @ColumnInfo(name = "create_on") val createOn: Long
+@Entity(tableName = "todo_items")
+data class TodoEntity(
+    @PrimaryKey(autoGenerate = true)
+    var id: Int,
+
+    @ColumnInfo(name = "content") var content: String,
+    @ColumnInfo(name = "create_on") var create_on: Long
 )
 
 @Dao
-interface OneToDoDAO {
-    @Query("SELECT * FROM OneToDo")
-    fun getAll(): List<OneToDo>
+interface TodoDao {
+    @Query("SELECT * FROM todo_items")
+    fun getAll(): List<TodoEntity>
 
-    @Query("SELECT * FROM OneToDo WHERE id IN (:id)")
-    fun loadByIds(id: Int): OneToDo
+    @Query("SELECT * FROM todo_items WHERE id LIKE :id")
+    fun findById(id: Int): TodoEntity
 
     @Insert
-    fun insertAll(vararg users: OneToDo)
+    fun insertAll(vararg todo: TodoEntity)
 
     @Delete
-    fun delete(user: OneToDo)
+    fun delete(todo: TodoEntity)
+
+    @Update
+    fun updateTodo(vararg todos: TodoEntity)
 }
 
-@Database(entities = [OneToDo::class], version = 1)
+@Database(entities = arrayOf(TodoEntity::class), version = 1)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun OneToDoDAO(): OneToDoDAO
+    abstract fun todoDao(): TodoDao
 }

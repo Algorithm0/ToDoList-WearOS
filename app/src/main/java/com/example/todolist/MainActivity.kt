@@ -28,11 +28,8 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
     private lateinit var recyclerView: WearableRecyclerView
     private lateinit var bar : ProgressBar
-    private lateinit var menuItems : List<OneToDo>
-    private val oneToDoDAO = Room.databaseBuilder(
-        applicationContext,
-        AppDatabase::class.java, "database"
-    ).build().OneToDoDAO()
+    private lateinit var menuItems : List<TodoEntity>
+    private lateinit var toDoDao : TodoDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +41,12 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         recyclerView.isEdgeItemsCenteringEnabled = true
         recyclerView.layoutManager = WearableLinearLayoutManager(this)
 
+        toDoDao = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "todo-list.db"
+        ).build().todoDao()
+
+        //enable wheel scrolling
         recyclerView.apply {
             isCircularScrollingGestureEnabled = true
             bezelFraction = 0.5f
@@ -65,9 +68,9 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     private fun updateList() {
         bar.visibility = ProgressBar.VISIBLE
         recyclerView.visibility = View.INVISIBLE
-//
+
         scope.launch {
-            menuItems = oneToDoDAO.getAll()
+            menuItems = toDoDao.getAll()
             runOnUiThread {
                 recyclerView.adapter = MainMenuAdapter(menuItems, object :
                     MainMenuAdapter.AdapterCallback {
@@ -87,7 +90,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
     fun createMes(code: Int): String {
         return if (code == -222) "A"
-        else "O${oneToDoDAO.loadByIds(code).text}"
+        else "O${toDoDao.findById(code).content}"
     }
 
     // Enables Always-on
