@@ -9,15 +9,13 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class MainMenuAdapter(dataArgs: List<TodoEntity>, callback: AdapterCallback?) :
+class MainMenuAdapter(dataArgs: List<TodoEntity>, private val callback: AdapterCallback?) :
     RecyclerView.Adapter<MainMenuAdapter.RecyclerViewHolder>() {
     private var dataSource = dataArgs
 
     interface AdapterCallback {
-        fun onItemClicked(menuPosition: Int?)
+        fun onItemClicked(menuPosition: Long)
     }
-
-    private val callback: AdapterCallback? = callback
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.main_menu_item, parent, false)
@@ -27,23 +25,22 @@ class MainMenuAdapter(dataArgs: List<TodoEntity>, callback: AdapterCallback?) :
     class RecyclerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var menuContainer: RelativeLayout = view.findViewById(R.id.menu_container)
         var menuItem: TextView = view.findViewById(R.id.menu_item)
-        //var menuIcon: ImageView = view.findViewById(R.id.menu_icon)
-
+        var menuIcon: ImageView = view.findViewById(R.id.menu_icon)
     }
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
         when (position) {
-            0 -> {holder.menuItem.text = "Добавить"; holder.menuContainer.setOnClickListener { callback?.onItemClicked(-222) }}
+            0 -> {holder.menuItem.text = "Добавить"; holder.menuIcon.setImageResource(R.drawable.baseline_add_circle_white_24); holder.menuContainer.setOnClickListener { callback?.onItemClicked(-1) }}
             1 -> {
                 if (dataSource.isEmpty()) {
-                    holder.menuItem.text = "здесь\nничего нет"
+                    holder.menuItem.text = "здесь пока\nничего нет"
                     holder.menuItem.textSize = 15f
                 }
             }
             else -> {
                 holder.menuItem.text = dataSource[position-1].content
-                holder.menuContainer.setOnClickListener { callback?.onItemClicked(dataSource[position-1].id) }
+                holder.menuContainer.setOnClickListener { callback?.onItemClicked(dataSource[position-1].create_on) }
             }
         }
     }

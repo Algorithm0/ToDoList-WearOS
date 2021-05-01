@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.room.Room
 import androidx.wear.ambient.AmbientModeSupport
 import androidx.wear.widget.WearableLinearLayoutManager
 import androidx.wear.widget.WearableRecyclerView
@@ -14,15 +13,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-const val EXTRA_MESSAGE = "com.example.todolist.MESSAGE"
+
+const val EXTRA_MESSAGE = "com.example.todolist.MESSAGE1"
 
 enum class ActionType(val bol: Boolean) {
-    OPEN (true),
-    ADD (false)
+    OPEN(true),
+    ADD(false)
 }
 
-val job: Job = Job()
-val scope = CoroutineScope(Dispatchers.Default + job)
+val scope = CoroutineScope(Dispatchers.Default + Job())
 
 class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProvider {
 
@@ -34,6 +33,8 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_menu)
+
+        // Enables Always-on
         ambientController = AmbientModeSupport.attach(this)
 
         recyclerView = findViewById(R.id.recycler_launcher_view)
@@ -41,10 +42,12 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         recyclerView.isEdgeItemsCenteringEnabled = true
         recyclerView.layoutManager = WearableLinearLayoutManager(this)
 
-        toDoDao = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java, "todo-list.db"
-        ).build().todoDao()
+//        toDoDao = Room.databaseBuilder(
+//                applicationContext,
+//                AppDatabase::class.java, "todo-list.db"
+//        ).build().todoDao()
+
+        toDoDao = UserDb.getInstance(applicationContext)!!.todoDao()
 
         //enable wheel scrolling
         recyclerView.apply {
@@ -58,7 +61,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         updateList()
     }
 
-    fun sendMessage(msg : String) {
+    fun sendMessage(msg: String) {
         val intent = Intent(this, SecondActivity::class.java).apply {
             putExtra(EXTRA_MESSAGE, msg)
         }
@@ -73,12 +76,9 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
             menuItems = toDoDao.getAll()
             runOnUiThread {
                 recyclerView.adapter = MainMenuAdapter(menuItems, object :
-                    MainMenuAdapter.AdapterCallback {
-                    override fun onItemClicked(menuPosition: Int?) {
-                        when (menuPosition) {
-                            null -> {}
-                            else -> sendMessage(createMes(menuPosition))
-                        }
+                        MainMenuAdapter.AdapterCallback {
+                    override fun onItemClicked(menuPosition: Long) {
+                        sendMessage(createMes(menuPosition))
                     }
                 })
                 bar.visibility = ProgressBar.INVISIBLE
@@ -88,9 +88,9 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         }
     }
 
-    fun createMes(code: Int): String {
-        return if (code == -222) "A"
-        else "O${toDoDao.findById(code).content}"
+    fun createMes(code: Long): String {
+        return if (code == -1L) "A"
+        else "O$code"
     }
 
     // Enables Always-on
