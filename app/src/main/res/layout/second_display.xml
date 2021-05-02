@@ -38,6 +38,7 @@
             android:text="Enter\nyour text"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
+            android:textStyle="bold"
             tools:ignore="HardcodedText,RtlCompat"/>
 
         <LinearLayout
@@ -53,7 +54,7 @@
                 android:layout_gravity="center"
                 android:contentDescription="@string/generic_cancel"
                 android:backgroundTintMode="src_atop"
-                android:background="@drawable/baseline_cancel_white_24"
+                android:background="@drawable/baseline_cancel_white_36"
                 android:backgroundTint="#82e9de"
                 android:layout_marginEnd="5dp"/>
 
@@ -65,7 +66,7 @@
                 android:layout_gravity="center"
                 android:contentDescription="@string/generic_cancel"
                 android:backgroundTintMode="src_atop"
-                android:background="@drawable/baseline_check_circle_white_24"
+                android:background="@drawable/baseline_check_circle_white_36"
                 android:backgroundTint="#82e9de"
                 android:layout_marginStart="5dp"/>
 

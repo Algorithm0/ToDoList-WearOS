@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class MainMenuAdapter(dataArgs: List<TodoEntity>, private val callback: AdapterCallback?) :
-    RecyclerView.Adapter<MainMenuAdapter.RecyclerViewHolder>() {
+        RecyclerView.Adapter<MainMenuAdapter.RecyclerViewHolder>() {
     private var dataSource = dataArgs
 
     interface AdapterCallback {
@@ -31,15 +31,26 @@ class MainMenuAdapter(dataArgs: List<TodoEntity>, private val callback: AdapterC
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
         when (position) {
-            0 -> {holder.menuItem.text = "Добавить"; holder.menuIcon.setImageResource(R.drawable.baseline_add_circle_white_24); holder.menuContainer.setOnClickListener { callback?.onItemClicked(-1) }}
+            0 -> {
+                holder.menuItem.text = "Добавить";
+                holder.menuIcon.visibility = View.VISIBLE
+                holder.menuIcon.setImageResource(R.drawable.baseline_add_circle_white_36);
+                holder.menuContainer.setOnClickListener { callback?.onItemClicked(-1) }
+            }
             1 -> {
                 if (dataSource.isEmpty()) {
                     holder.menuItem.text = "здесь пока\nничего нет"
                     holder.menuItem.textSize = 15f
                 }
+                else {
+                    holder.menuItem.text = dataSource[position-1].content
+                    holder.menuIcon.visibility = View.INVISIBLE
+                    holder.menuContainer.setOnClickListener { callback?.onItemClicked(dataSource[position-1].create_on) }
+                }
             }
             else -> {
                 holder.menuItem.text = dataSource[position-1].content
+                holder.menuIcon.visibility = View.INVISIBLE
                 holder.menuContainer.setOnClickListener { callback?.onItemClicked(dataSource[position-1].create_on) }
             }
         }

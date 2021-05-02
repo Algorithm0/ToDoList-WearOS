@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         val intent = Intent(this, SecondActivity::class.java).apply {
             putExtra(EXTRA_MESSAGE, msg)
         }
-        startActivity(intent)
+        startActivityForResult(intent, 0)
     }
 
     private fun updateList() {
@@ -91,6 +91,12 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     fun createMes(code: Long): String {
         return if (code == -1L) "A"
         else "O$code"
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode==0 && resultCode == -1)
+            updateList()
     }
 
     // Enables Always-on

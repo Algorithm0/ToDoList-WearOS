@@ -3,6 +3,7 @@ package com.example.todolist
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
+import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.view.View
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
 import androidx.wear.ambient.AmbientModeSupport
 import kotlinx.coroutines.launch
+import java.util.*
 import com.example.todolist.AppDatabase as AppDatabase
 
 class SecondActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProvider {
@@ -41,12 +43,13 @@ class SecondActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackPr
         readMessage(message.toString())
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "SimpleDateFormat")
     private fun readMessage (mes : String) {
         if (mes[0] == 'A') {
             labelText.text = "Новый\nпункт"
             editText.setText("Введите текст")
             dellButton.setOnClickListener {
+                this@SecondActivity.setResult(0)
                 super.finish()
             }
             addButton.setOnClickListener{
@@ -57,14 +60,51 @@ class SecondActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackPr
                                     create_on = Calendar.getInstance().time.time,
                             ))
                     runOnUiThread {
-                        super.finishActivity(0)
+                        this@SecondActivity.setResult(-1)
+                        super.finish()
                     }
                 }
-
             }
         }
-
-        //else "O${toDoDao.findById(code).content}"
+        else {
+            val idText = mes.substring(1).toLong()
+            var elem : TodoEntity
+            labelText.text = "От\n${SimpleDateFormat("dd.MM.yyyy HH:mm").format(Date(idText))}"
+            scope.launch {
+                elem = UserDb.getInstance(applicationContext)!!.todoDao().findById(idText)
+                runOnUiThread {
+                    editText.setText(elem.content)
+                    dellButton.setOnClickListener {
+                        scope.launch {
+                            UserDb.getInstance(applicationContext)!!.todoDao().delete(elem)
+                            runOnUiThread {
+                                this@SecondActivity.setResult(-1)
+                                super.finish()
+                            }
+                        }
+                    }
+                    addButton.setOnClickListener {
+                        val textOnView = editText.text.toString()
+                        if (textOnView.isNotBlank()) {
+                            if (elem.content != textOnView) {
+                                elem.content = textOnView
+                                scope.launch {
+                                    UserDb.getInstance(applicationContext)!!.todoDao().updateTodo(elem)
+                                    runOnUiThread {
+                                        this@SecondActivity.setResult(-1)
+                                        super.finish()
+                                    }
+                                }
+                            }
+                            else {
+                                this@SecondActivity.setResult(0)
+                                super.finish()
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     // Enables Always-on
