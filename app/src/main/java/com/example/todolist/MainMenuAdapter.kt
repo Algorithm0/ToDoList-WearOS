@@ -43,7 +43,10 @@ class MainMenuAdapter(dataArgs: List<TodoEntity>, private val callback: AdapterC
                     holder.menuItem.textSize = 15f
                 }
                 else {
-                    holder.menuItem.text = dataSource[position-1].content
+                    if (dataSource[position-1].content.length > 10)
+                        holder.menuItem.text = dataSource[position-1].content.substring(0, 15)
+                    else
+                        holder.menuItem.text = dataSource[position-1].content
                     holder.menuIcon.visibility = View.INVISIBLE
                     holder.menuContainer.setOnClickListener { callback?.onItemClicked(dataSource[position-1].create_on) }
                 }

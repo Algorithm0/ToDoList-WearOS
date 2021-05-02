@@ -53,15 +53,18 @@ class SecondActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackPr
                 super.finish()
             }
             addButton.setOnClickListener{
-                scope.launch {
-                    UserDb.getInstance(applicationContext)!!.todoDao().insertAll(
-                            TodoEntity(
-                                    content = editText.text.toString(),
-                                    create_on = Calendar.getInstance().time.time,
-                            ))
-                    runOnUiThread {
-                        this@SecondActivity.setResult(-1)
-                        super.finish()
+                val textOnView = editText.text.toString()
+                if (textOnView.isNotBlank() && textOnView != "Введите текст") {
+                    scope.launch {
+                        UserDb.getInstance(applicationContext)!!.todoDao().insertAll(
+                                TodoEntity(
+                                        content = editText.text.toString(),
+                                        create_on = Calendar.getInstance().time.time,
+                                ))
+                        runOnUiThread {
+                            this@SecondActivity.setResult(-1)
+                            super.finish()
+                        }
                     }
                 }
             }

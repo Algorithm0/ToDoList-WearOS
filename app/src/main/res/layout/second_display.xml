@@ -83,7 +83,8 @@
             android:textAlignment="center"
             android:textSize="18sp"
             android:inputType="textMultiLine"
-            tools:ignore="HardcodedText,RtlCompat" />
+            tools:ignore="HardcodedText,LabelFor,RtlCompat"
+            android:autofillHints="Enter there" />
 
     </LinearLayout>
 
