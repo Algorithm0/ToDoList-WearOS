@@ -36,27 +36,27 @@ class MainMenuAdapter(dataArgs: List<TodoEntity>, private val callback: AdapterC
                 holder.menuIcon.visibility = View.VISIBLE
                 holder.menuIcon.setImageResource(R.drawable.baseline_add_circle_white_36);
                 holder.menuContainer.setOnClickListener { callback?.onItemClicked(-1) }
+                holder.menuItem.textSize = 24f
             }
             1 -> {
                 if (dataSource.isEmpty()) {
                     holder.menuItem.text = "здесь пока\nничего нет"
                     holder.menuItem.textSize = 15f
                 }
-                else {
-                    if (dataSource[position-1].content.length > 10)
-                        holder.menuItem.text = dataSource[position-1].content.substring(0, 15)
-                    else
-                        holder.menuItem.text = dataSource[position-1].content
-                    holder.menuIcon.visibility = View.INVISIBLE
-                    holder.menuContainer.setOnClickListener { callback?.onItemClicked(dataSource[position-1].create_on) }
-                }
+                else onBindViewHolderSimple(holder, 1)
             }
-            else -> {
-                holder.menuItem.text = dataSource[position-1].content
-                holder.menuIcon.visibility = View.INVISIBLE
-                holder.menuContainer.setOnClickListener { callback?.onItemClicked(dataSource[position-1].create_on) }
-            }
+            else -> onBindViewHolderSimple(holder, position)
         }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun onBindViewHolderSimple(holder: RecyclerViewHolder, position: Int) {
+        if (dataSource[position-1].content.length > 18)
+            holder.menuItem.text = "${dataSource[position-1].content.substring(0, 18)}..."
+        else
+            holder.menuItem.text = dataSource[position-1].content
+        holder.menuIcon.visibility = View.INVISIBLE
+        holder.menuContainer.setOnClickListener { callback?.onItemClicked(dataSource[position-1].create_on) }
     }
 
     override fun getItemCount(): Int {

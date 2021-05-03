@@ -2,12 +2,14 @@ package com.example.todolist
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals
-//import org.junit.jupiter.api.DisplayName
-//import org.junit.jupiter.api.RepeatedTest
-//import kotlin.math.pow
-//import kotlin.math.roundToInt
+import org.junit.jupiter.api.DisplayName
 
-class SolutionTest {
+internal class MainActivityMock : MainActivity() {
+
+}
+
+@DisplayName("Test base function of this application")
+class ToDoTest {
 
     @Test
     fun test_test() {

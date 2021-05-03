@@ -23,7 +23,7 @@ enum class ActionType(val bol: Boolean) {
 
 val scope = CoroutineScope(Dispatchers.Default + Job())
 
-class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProvider {
+open class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProvider {
 
     private lateinit var recyclerView: WearableRecyclerView
     private lateinit var bar : ProgressBar
@@ -41,11 +41,6 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         recyclerView.setHasFixedSize(true)
         recyclerView.isEdgeItemsCenteringEnabled = true
         recyclerView.layoutManager = WearableLinearLayoutManager(this)
-
-//        toDoDao = Room.databaseBuilder(
-//                applicationContext,
-//                AppDatabase::class.java, "todo-list.db"
-//        ).build().todoDao()
 
         toDoDao = UserDb.getInstance(applicationContext)!!.todoDao()
 
@@ -73,7 +68,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         recyclerView.visibility = View.INVISIBLE
 
         scope.launch {
-            menuItems = toDoDao.getAll()
+            menuItems = toDoDao.getAllSorted()
             runOnUiThread {
                 recyclerView.adapter = MainMenuAdapter(menuItems, object :
                         MainMenuAdapter.AdapterCallback {

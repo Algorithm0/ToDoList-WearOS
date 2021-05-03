@@ -7,12 +7,16 @@ import androidx.room.*
 data class TodoEntity(
     @ColumnInfo(name = "content") var content: String,
     @PrimaryKey var create_on: Long
+
 )
 
 @Dao
 interface TodoDao {
     @Query("SELECT * FROM todo_items")
     fun getAll(): List<TodoEntity>
+
+    @Query("SELECT * FROM todo_items ORDER BY create_on DESC")
+    fun getAllSorted(): List<TodoEntity>
 
     @Query("SELECT * FROM todo_items WHERE create_on LIKE :id")
     fun findById(id: Long): TodoEntity
@@ -37,16 +41,20 @@ abstract class UserDb : RoomDatabase() {
     companion object {
         private var INSTANCE: AppDatabase? = null
 
-        fun getInstance(context: Context): AppDatabase? {
+        fun getInstance(context: Context, useForTest: Boolean = false): AppDatabase? {
             if (INSTANCE == null) {
                 synchronized(AppDatabase::class) {
-                    INSTANCE = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "todo-list.db").build()
+                    INSTANCE = if (useForTest)
+                        Room.databaseBuilder(context, AppDatabase::class.java, "todo-list.db").build()
+                    else
+                        Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
                 }
             }
-            return INSTANCE
+            return INSTANCE!!
         }
 
         fun destroyInstance() {
+            INSTANCE?.close()
             INSTANCE = null
         }
 

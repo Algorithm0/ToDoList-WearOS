@@ -14,8 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:progress="30"
-        android:progressBackgroundTint="#82e9de"
-        android:progressTint="#82e9de"
+        android:progressBackgroundTint="@color/orange"
+        android:progressTint="@color/orange"
         android:visibility="invisible" />
 
     <LinearLayout
@@ -55,7 +55,7 @@
                 android:contentDescription="@string/generic_cancel"
                 android:backgroundTintMode="src_atop"
                 android:background="@drawable/baseline_cancel_white_36"
-                android:backgroundTint="#82e9de"
+                android:backgroundTint="@color/dark_red"
                 android:layout_marginEnd="5dp"/>
 
 
@@ -64,10 +64,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:contentDescription="@string/generic_cancel"
+                android:contentDescription="@string/generic_yes"
                 android:backgroundTintMode="src_atop"
                 android:background="@drawable/baseline_check_circle_white_36"
-                android:backgroundTint="#82e9de"
+                android:backgroundTint="@color/light_blue_A400"
                 android:layout_marginStart="5dp"/>
 
         </LinearLayout>

@@ -23,9 +23,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:progress="30"
-        android:progressTint="#82e9de"
+        android:progressTint="@color/orange"
         android:visibility="visible"
-        android:progressBackgroundTint="#82e9de"
+        android:progressBackgroundTint="@color/orange"
         />
 
 </androidx.wear.widget.BoxInsetLayout>
