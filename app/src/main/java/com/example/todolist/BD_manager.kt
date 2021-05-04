@@ -36,7 +36,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun todoDao(): TodoDao
 }
 
-abstract class UserDb : RoomDatabase() {
+abstract class AppDateHelper : RoomDatabase() {
 
     companion object {
         private var INSTANCE: AppDatabase? = null
@@ -53,9 +53,15 @@ abstract class UserDb : RoomDatabase() {
             return INSTANCE!!
         }
 
+        fun instanceIsNull () : Boolean { return INSTANCE==null }
+
         fun destroyInstance() {
             INSTANCE?.close()
             INSTANCE = null
+        }
+
+        fun getDAO(context: Context, useForTest: Boolean = false) : TodoDao{
+            return getInstance(context, useForTest)!!.todoDao()
         }
 
     }

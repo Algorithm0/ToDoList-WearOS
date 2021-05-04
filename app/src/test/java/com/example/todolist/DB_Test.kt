@@ -1,29 +1,35 @@
 package com.example.todolist
 
-import androidx.room.Room
-import androidx.test.platform.app.InstrumentationRegistry
-import org.junit.jupiter.api.*
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import org.junit.After
+import org.junit.Assume.assumeTrue
+import org.junit.Assume.assumeFalse
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
 import java.io.IOException
-import org.junit.jupiter.api.Assumptions.assumeTrue
 
+//use with JRE version 9
+@RunWith(AndroidJUnit4::class)
+class AppDataBaseTest {
+    private lateinit var todoDao: TodoDao
+    private val scopeTest = CoroutineScope(Dispatchers.Main + Job())
 
-@DisplayName("Test database: write and write functions")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class SimpleEntityReadWriteTest {
-    private lateinit var dao: TodoDao
-    private lateinit var db: AppDatabase
-
-    @BeforeAll
+    @Before
     fun createDb() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        db = UserDb.getInstance(context, true)!!
-        dao = db.todoDao()
+        todoDao = AppDateHelper.getDAO(ApplicationProvider.getApplicationContext<Context>(), true)
     }
 
-    @AfterAll
+    @After
     @Throws(IOException::class)
     fun closeDb() {
-        db.close()
+        AppDateHelper.destroyInstance()
     }
 
     private fun entityEq(one: TodoEntity, two : TodoEntity) : Boolean {
@@ -32,10 +38,35 @@ class SimpleEntityReadWriteTest {
 
     @Test
     @Throws(Exception::class)
-    fun writeUserAndReadInList() {
+    fun writeElemAndReadInList() {
         val one = TodoEntity("test content string", 158)
-        dao.insertAll(one)
-        val two = dao.findById(158)
-        assumeTrue(entityEq(one, two))
+        scopeTest.launch {
+            todoDao.insertAll(one)
+            val two = todoDao.findById(158)
+            assumeTrue(entityEq(one, two))
+        }
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun removeNotExistElemInList() {
+        val one = TodoEntity("test content string", 251)
+        scopeTest.launch {
+            todoDao.delete(one)
+        }
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun removeElemInList() {
+        val one = TodoEntity("test content string", 365)
+        scopeTest.launch {
+            todoDao.delete(one)
+        }
+    }
+
+    @Test
+    fun aliveInstanceInAppDateHelper() {
+        assumeFalse(AppDateHelper.instanceIsNull())
     }
 }

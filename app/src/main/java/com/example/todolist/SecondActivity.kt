@@ -1,22 +1,16 @@
 package com.example.todolist
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.Application
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.room.Room
 import androidx.wear.ambient.AmbientModeSupport
 import kotlinx.coroutines.launch
 import java.util.*
-import com.example.todolist.AppDatabase as AppDatabase
 
 class SecondActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProvider {
 
@@ -56,7 +50,7 @@ class SecondActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackPr
                 val textOnView = editText.text.toString()
                 if (textOnView.isNotBlank() && textOnView != "Введите текст") {
                     scope.launch {
-                        UserDb.getInstance(applicationContext)!!.todoDao().insertAll(
+                        AppDateHelper.getInstance(applicationContext)!!.todoDao().insertAll(
                                 TodoEntity(
                                         content = editText.text.toString(),
                                         create_on = Calendar.getInstance().time.time,
@@ -74,12 +68,12 @@ class SecondActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackPr
             var elem : TodoEntity
             labelText.text = "От\n${SimpleDateFormat("dd.MM.yyyy HH:mm").format(Date(idText))}"
             scope.launch {
-                elem = UserDb.getInstance(applicationContext)!!.todoDao().findById(idText)
+                elem = AppDateHelper.getDAO(applicationContext).findById(idText)
                 runOnUiThread {
                     editText.setText(elem.content)
                     dellButton.setOnClickListener {
                         scope.launch {
-                            UserDb.getInstance(applicationContext)!!.todoDao().delete(elem)
+                            AppDateHelper.getDAO(applicationContext).delete(elem)
                             runOnUiThread {
                                 this@SecondActivity.setResult(-1)
                                 super.finish()
@@ -92,7 +86,7 @@ class SecondActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackPr
                             if (elem.content != textOnView) {
                                 elem.content = textOnView
                                 scope.launch {
-                                    UserDb.getInstance(applicationContext)!!.todoDao().updateTodo(elem)
+                                    AppDateHelper.getDAO(applicationContext).updateTodo(elem)
                                     runOnUiThread {
                                         this@SecondActivity.setResult(-1)
                                         super.finish()

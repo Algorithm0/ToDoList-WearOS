@@ -42,7 +42,7 @@ open class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbac
         recyclerView.isEdgeItemsCenteringEnabled = true
         recyclerView.layoutManager = WearableLinearLayoutManager(this)
 
-        toDoDao = UserDb.getInstance(applicationContext)!!.todoDao()
+        toDoDao = AppDateHelper.getDAO(applicationContext)
 
         //enable wheel scrolling
         recyclerView.apply {
