@@ -1,29 +1,28 @@
 package com.example.todolist
 
-import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.junit.After
 import org.junit.Assume.assumeTrue
 import org.junit.Assume.assumeFalse
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
 import java.io.IOException
 
-//use with JRE version 9
+//use with JRE version 9 and younger
+@Config(manifest=Config.NONE)
 @RunWith(AndroidJUnit4::class)
 class AppDataBaseTest {
     private lateinit var todoDao: TodoDao
-    private val scopeTest = CoroutineScope(Dispatchers.Main + Job())
+    private val job = Job()
+    private val scopeTest = CoroutineScope(Dispatchers.Main + job)
 
     @Before
     fun createDb() {
-        todoDao = AppDateHelper.getDAO(ApplicationProvider.getApplicationContext<Context>(), true)
+        todoDao = AppDateHelper.getDAO(ApplicationProvider.getApplicationContext(), true)
     }
 
     @After
@@ -38,31 +37,36 @@ class AppDataBaseTest {
 
     @Test
     @Throws(Exception::class)
-    fun writeElemAndReadInList() {
+    fun writeElemAndRead() = runBlocking {
         val one = TodoEntity("test content string", 158)
-        scopeTest.launch {
+        var two = TodoEntity("", 0)
+        val job = GlobalScope.launch {
             todoDao.insertAll(one)
-            val two = todoDao.findById(158)
-            assumeTrue(entityEq(one, two))
+            two = todoDao.findById(158)
         }
+        job.join()
+        assumeTrue(entityEq(one, two))
     }
 
     @Test
     @Throws(Exception::class)
-    fun removeNotExistElemInList() {
+    fun removeNotExistElem() = runBlocking {
         val one = TodoEntity("test content string", 251)
-        scopeTest.launch {
+        val job = GlobalScope.launch {
             todoDao.delete(one)
         }
+        job.join()
     }
 
     @Test
     @Throws(Exception::class)
-    fun removeElemInList() {
+    fun writeElemAndRemove() = runBlocking {
         val one = TodoEntity("test content string", 365)
-        scopeTest.launch {
+        val job = GlobalScope.launch {
+            todoDao.insertAll(one)
             todoDao.delete(one)
         }
+        job.join()
     }
 
     @Test

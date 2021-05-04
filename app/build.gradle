@@ -24,8 +24,12 @@ android {
         }
     }
 
-    testOptions {
-        unitTests.includeAndroidResources = true
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
 }
 
@@ -45,7 +49,7 @@ dependencies {
     //jupiter tests
     testImplementation "org.junit.jupiter:junit-jupiter-api:$jupiter_version"
     testImplementation "org.junit.jupiter:junit-jupiter-params:$jupiter_version"
-    testImplementation "io.mockk:mockk:1.4.1"
+    testImplementation "io.mockk:mockk:1.11.0"
 
     //Test for DB, over time it is worth combining with Jupiter
     testImplementation 'junit:junit:4.13.2'

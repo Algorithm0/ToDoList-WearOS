@@ -23,7 +23,7 @@ enum class ActionType(val bol: Boolean) {
 
 val scope = CoroutineScope(Dispatchers.Default + Job())
 
-open class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProvider {
+class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProvider {
 
     private lateinit var recyclerView: WearableRecyclerView
     private lateinit var bar : ProgressBar
